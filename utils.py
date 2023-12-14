@@ -19,6 +19,19 @@ def get_params_from_query(query) -> str:
     return arguments
 
 
+def get_source_and_destination_items(message) -> list:
+    tokens = shlex.split(message)
+    command = tokens[0]
+    
+    source_items, destination_items = [], []
+    for item in tokens[1::1]:
+        x, y = item.split('-')
+        source_items.append(x)
+        destination_items.append(y)
+
+    return [command[0:-1:1], source_items, destination_items]
+
+
 def file_transfer_receiver_side(save_path, conn):
     file_size = int(conn.recv(8192).decode())
     received_size = 0

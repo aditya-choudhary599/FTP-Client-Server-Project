@@ -2,74 +2,143 @@
 
 ## Overview
 
-This project is an implementation of a basic FTP (File Transfer Protocol) client-server system in Python. The system facilitates efficient file and folder operations between a client and a server, providing a command-line interface for users to interact with the FTP server.
+The FTP Client-Server Project is a simple and versatile file transfer application built in Python. It consists of two main components: `ftp_server.py` and `ftp_client.py`. The system utilizes sockets for communication and supports various file and folder operations, including upload, download, listing, navigation, and more.
 
-## Features
+## Table of Contents
 
-### FTP Client (`ftp_client.py`)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Usage](#usage)
+  - [Server](#server)
+  - [Client](#client)
+- [Features](#features)
+- [File Transfer](#file-transfer)
+  - [Uploading Files](#uploading-files)
+  - [Downloading Files](#downloading-files)
+  - [Transferring Folders](#transferring-folders)
+- [Commands](#commands)
+- [Handling Multiple Files and Folders](#handling-multiple-files-and-folders)
+- [Contributing](#contributing)
+- [License](#license)
 
-1. **Connection Handling:**
-   - Establishes a socket connection to the FTP server.
-   - Uses TCP/IP sockets for communication.
+## Getting Started
 
-2. **Command Interpretation:**
-   - Interprets various commands entered by the user, including `GET_FILE`, `LOAD_FILE`, `GET_FOLDER`, `LOAD_FOLDER`, `CD`, `MKDIR`, `RMDIR`, `MKFILE`, `RMFILE`, `PWD`, and `LIST`.
+### Prerequisites
 
-3. **File and Folder Transfer:**
-   - Implements file transfer functionalities using the `GET_FILE` and `LOAD_FILE` commands.
-   - Supports folder transfers through the `GET_FOLDER` and `LOAD_FOLDER` commands.
-   - Utilizes the `tqdm` library for progress bars during file and folder transfers.
+- Python 3.x
+- tqdm library (`pip install tqdm`)
 
-4. **User Interface:**
-   - Provides a simple command-line interface for users to interact with the FTP server.
-   - Displays server responses and prompts for user input.
+### Installation
 
-### FTP Server (`ftp_server.py`)
+1. Clone the repository:
 
-1. **Connection Management:**
-   - Listens for incoming client connections on a specified IP address and port.
-   - Accepts client connections and establishes communication.
+   ```bash
+   git clone https://github.com/aditya-choudhary599/FTP-Client-Server-Project.git
+   ```
 
-2. **Command Execution:**
-   - Executes various commands received from the client, such as `QUIT`, `PWD`, `LIST`, `CD`, `MKDIR`, `RMDIR`, `MKFILE`, `RMFILE`, `GET_FILE`, `LOAD_FILE`, `GET_FOLDER`, and `LOAD_FOLDER`.
+2. Navigate to the project directory:
 
-3. **File and Folder Operations:**
-   - Handles file and folder transfers with the client using sockets.
-   - Supports basic file and folder operations like listing directory contents, changing directories, creating folders, and deleting files and folders.
+   ```bash
+   cd 'FTP Client-Server Project'
+   ```
 
-4. **User Interface:**
-   - Provides server responses to client requests.
-   - Displays information about successful connections and command executions.
+3. Run the server:
 
-### Utilities (`utils.py`)
+   ```bash
+   python3 ftp_server.py
+   ```
 
-1. **File Transfer Functions:**
-   - Implements functions for sending and receiving files between the client and server.
-   - Progress bars provided for visualizing file transfer progress.
+4. Run the client:
 
-2. **Folder Transfer Functions:**
-   - Supports compression and decompression of folders for efficient transfer.
-   - Utilizes the `tqdm` library for progress bars during folder transfers.
-
-3. **Query Parameter Extraction:**
-   - Extracts parameters from user queries for processing.
+   ```bash
+   python3 ftp_client.py
+   ```
 
 ## Usage
 
-1. Run the FTP server: `python ftp_server.py`.
-2. Run the FTP client: `python ftp_client.py`.
-3. Enter commands in the client to interact with the server.
+### Server
 
-## File and Folder Transfer
+- The server runs on the specified IP address and port (default: `0.0.0.0:44000`).
+- It accepts incoming connections from clients and handles various file and folder operations.
 
-- File transfers use `GET_FILE` and `LOAD_FILE` commands.
-- Folder transfers use `GET_FOLDER` and `LOAD_FOLDER` commands.
-- Files and folders are transferred using sockets, and folders are compressed and decompressed for efficient transfer.
-- Progress bars indicate the status of file and folder transfers.
+### Client
 
-## Additional Notes
+- The client connects to the server and provides a command-line interface for interacting with the file transfer system.
+- Users can issue commands to navigate directories, list files, upload/download files, and transfer entire folders.
 
-- The project utilizes Python's `socket` library for network communication.
-- Basic error handling is implemented for socket connections and file operations.
-- Commands are parsed using the `shlex` module.
-- Progress bars are provided during file and folder transfers using the `tqdm` library.
+## Features
+
+- **File Transfer:** Secure and efficient file transfer between the server and client.
+- **Folder Operations:** Upload and download entire folders with automatic compression and decompression.
+- **Command-Line Interface:** Simple and intuitive command-line interface for users.
+- **Cross-Platform:** Compatible with Windows, Linux, and macOS.
+
+## File Transfer
+
+### Uploading a Single File
+
+To upload a file from the client to the server, use the `LOAD_FILE` command:
+
+```bash
+LOAD_FILE 'source_file' 'destination_file'
+```
+
+### Downloading a Single File
+
+To download a file from the server to the client, use the `GET_FILE` command:
+
+```bash
+GET_FILE 'source_file' 'destination_file'
+```
+
+### Transferring a Single Folder
+
+To upload an entire folder, use the `LOAD_FOLDER` command:
+
+```bash
+LOAD_FOLDER 'source_folder' 'destination_folder'
+```
+
+To download an entire folder, use the `GET_FOLDER` command:
+
+```bash
+GET_FOLDER 'source_folder' 'destination_folder'
+```
+
+## Commands
+
+- `PWD`: Print the current working directory.
+- `LIST [directory]`: List files and directories in the specified directory.
+- `CD [directory]`: Change the current working directory.
+- `MKDIR [directory]`: Create a new directory.
+- `RMDIR [directory]`: Remove a directory.
+- `MKFILE [file]`: Create a new empty file.
+- `RMFILE [file]`: Remove a file.
+- `QUIT`: Disconnect from the server.
+
+## Handling Multiple Files and Folders
+
+- For commands involving files or folders (e.g., `LOAD_FILES`, `GET_FILES`, `LOAD_FOLDERS`, `GET_FOLDERS`), you can specify multiple items by providing additional pairs of paths. Each pair consists of a source and destination path.
+
+  Example:
+
+  ```bash
+  LOAD_FILES 'local_file1-remote_file1' 'local_file2-remote_file2'
+  ```
+
+  ```bash
+  GET_FILES 'remote_file1-local_file1' 'remote_file2-local_file2'
+  ```
+
+  ```bash
+  LOAD_FOLDERS 'local_folder1-remote_folder1' 'local_folder2-remote_folder2'
+  ```
+
+  ```bash
+  GET_FOLDERS 'remote_folder1-local_folder1' 'remote_folder2-local_folder2'
+  ```
+
+## Contributing
+
+Contributions are welcome! Feel free to open issues or submit pull requests.

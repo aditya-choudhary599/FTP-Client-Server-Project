@@ -13,8 +13,19 @@ print(data, end='\n')
 
 message = input(" -> ").strip()
 while message != 'EXIT':
+    if 'GET_FILES' in message:
+        command, source_files, destination_files = get_source_and_destination_items(
+            message)
 
-    if message[0:8] == 'GET_FILE':
+        for i in range(len(source_files)):
+            source_file = source_files[i]
+            destination_file = destination_files[i]
+
+            final_query = ' '.join([command, f"'{source_file}'"])
+            client_socket.send(final_query.encode())
+            file_transfer_receiver_side(destination_file, client_socket)
+
+    elif 'GET_FILE' in message:
         tokens = shlex.split(message)
         command = tokens[0]
         source_file = tokens[1]
@@ -22,9 +33,21 @@ while message != 'EXIT':
 
         final_query = ' '.join([command, f"'{source_file}'"])
         client_socket.send(final_query.encode())
-        file_transfer_receiver_side(destination_file,client_socket)
-        
-    elif message[0:9] == 'LOAD_FILE':
+        file_transfer_receiver_side(destination_file, client_socket)
+
+    elif 'LOAD_FILES' in message:
+        command, source_files, destination_files = get_source_and_destination_items(
+            message)
+
+        for i in range(len(source_files)):
+            source_file = source_files[i]
+            destination_file = destination_files[i]
+
+            final_query = ' '.join([command, f"'{destination_file}'"])
+            client_socket.send(final_query.encode())
+            file_transfer_sender_side(source_file, client_socket)
+
+    elif 'LOAD_FILE' in message:
         tokens = shlex.split(message)
         command = tokens[0]
         source_file = tokens[1]
@@ -32,10 +55,21 @@ while message != 'EXIT':
 
         final_query = ' '.join([command, f"'{destination_file}'"])
         client_socket.send(final_query.encode())
-
         file_transfer_sender_side(source_file, client_socket)
-    
-    elif message[0:10]=='GET_FOLDER':
+
+    elif 'GET_FOLDERS' in message:
+        command, source_folders, destination_folders = get_source_and_destination_items(
+            message)
+
+        for i in range(len(source_folders)):
+            source_folder = source_folders[i]
+            destination_folder = destination_folders[i]
+
+            final_query = ' '.join([command, f"'{source_folder}'"])
+            client_socket.send(final_query.encode())
+            folder_transfer_receiver_side(destination_folder, client_socket)
+
+    elif 'GET_FOLDER' in message:
         tokens = shlex.split(message)
         command = tokens[0]
         source_folder = tokens[1]
@@ -43,9 +77,21 @@ while message != 'EXIT':
 
         final_query = ' '.join([command, f"'{source_folder}'"])
         client_socket.send(final_query.encode())
-        folder_transfer_receiver_side(destination_folder,client_socket)
+        folder_transfer_receiver_side(destination_folder, client_socket)
 
-    elif message[0:11]=='LOAD_FOLDER':
+    elif 'LOAD_FOLDERS' in message:
+        command, source_folders, destination_folders = get_source_and_destination_items(
+            message)
+
+        for i in range(len(source_folders)):
+            source_folder = source_folders[i]
+            destination_folder = destination_folders[i]
+
+            final_query = ' '.join([command, f"'{destination_folder}'"])
+            client_socket.send(final_query.encode())
+            folder_transfer_sender_side(source_folder, client_socket)
+
+    elif 'LOAD_FOLDER' in message:
         tokens = shlex.split(message)
         command = tokens[0]
         source_folder = tokens[1]
@@ -53,8 +99,7 @@ while message != 'EXIT':
 
         final_query = ' '.join([command, f"'{destination_folder}'"])
         client_socket.send(final_query.encode())
-        
-        folder_transfer_sender_side(source_folder,client_socket)
+        folder_transfer_sender_side(source_folder, client_socket)
 
     elif message[0:5] == 'CLEAR':
         os.system('cls' if os.name == 'nt' else 'clear')
